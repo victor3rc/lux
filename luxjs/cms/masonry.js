@@ -114,7 +114,7 @@
       };
 
 
-    }).directive('masonry', function masonryDirective() {
+    }]).directive('masonry', function masonryDirective() {
       return {
         restrict: 'AE',
         controller: 'MasonryCtrl',

@@ -3,6 +3,7 @@
         return {
             "angular": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular",
             "angular-animate": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate",
+            "angular-gridster": "//raw.githubusercontent.com/ManifestWebDesign/angular-gridster/master/dist/angular-gridster.min.js",
             "angular-mocks": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-mocks.js",
             "angular-sanitize": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-sanitize",
             "angular-touch": "//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-touch",
