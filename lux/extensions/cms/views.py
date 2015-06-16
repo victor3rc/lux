@@ -4,17 +4,7 @@ from pulsar.utils.slugify import slugify
 
 import lux
 from lux import forms, HtmlRouter
-from lux.extensions import odm, admin
-from lux.forms import Layout, Fieldset, Submit
-
-
-class PageForm(forms.Form):
-    path = forms.CharField(required=False)
-    title = forms.CharField()
-    description = forms.TextField(required=False)
-    template_id = odm.RelationshipField('template', label='template')
-    published = forms.BooleanField(required=False)
-    layout = forms.TextField(required=False)
+from lux.extensions import odm
 
 
 class TemplateForm(forms.Form):
@@ -22,12 +12,21 @@ class TemplateForm(forms.Form):
     body = forms.TextField()
 
 
-class PageCRUD(odm.CRUD):
-    model = odm.RestModel('page', PageForm, url='html_pages')
-
-
 class TemplateCRUD(odm.CRUD):
     model = odm.RestModel('template', TemplateForm, url='html_templates')
+
+
+class PageForm(forms.Form):
+    path = forms.CharField(required=False)
+    title = forms.CharField()
+    description = forms.TextField(required=False)
+    template_id = odm.RelationshipField(TemplateCRUD.model, label='template')
+    published = forms.BooleanField(required=False)
+    layout = forms.TextField(required=False)
+
+
+class PageCRUD(odm.CRUD):
+    model = odm.RestModel('page', PageForm, url='html_pages')
 
 
 class AnyPage(HtmlRouter):
@@ -41,7 +40,6 @@ class AnyPage(HtmlRouter):
         '''Obtain the cms handler for this Router
         '''
         key = ':'.join(b[1] for b in self.full_route.breadcrumbs[:-1])
-        path = self.full_route.path
         if key:
             return CMS(app, slugify(key))
         else:
@@ -64,6 +62,8 @@ class CMS(lux.CMS):
         page = self.page(path)
         if page:
             return page['template']
+        else:
+            return super().template(path)
 
     def page(self, path):
         '''Obtain a page object from a path
@@ -81,8 +81,7 @@ class CMS(lux.CMS):
 
         for page in sitemap:
             route = Route(page['path'])
-            match = route.match(path)
-            if math:
+            if route.match(path):
                 return page
 
     def build_map(self):
@@ -103,34 +102,3 @@ class CMS(lux.CMS):
         if self.key:
             key = '%s:%s' (key, self.key)
         return key
-
-
-#    CLASSES FOR ADMIN
-class CmsAdmin(admin.CRUDAdmin):
-    '''Admin views for the cms
-    '''
-    section = 'cms'
-
-
-@admin.register(PageCRUD.model)
-class PageAdmin(CmsAdmin):
-    '''Admin views for html pages
-    '''
-    icon = 'fa fa-sitemap'
-    form = Layout(PageForm,
-                  Fieldset(all=True),
-                  Submit('Add new page'))
-    editform = Layout(PageForm,
-                      Fieldset(all=True),
-                      Submit('Update page'))
-
-
-@admin.register(TemplateCRUD.model)
-class TemplateAdmin(CmsAdmin):
-    icon = 'fa fa-file-code-o'
-    form = Layout(TemplateForm,
-                  Fieldset(all=True),
-                  Submit('Add new template'))
-    editform = Layout(TemplateForm,
-                      Fieldset(all=True),
-                      Submit('Update template'))

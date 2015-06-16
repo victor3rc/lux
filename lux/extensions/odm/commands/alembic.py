@@ -29,7 +29,7 @@ class Command(lux.Command):
         '''
         # alembic package is required to run any migration related command
         try:
-            import alembic
+            import alembic  # noqa
         except ImportError:  # pragma nocover
             raise CommandError('Alembic package is not installed')
 
@@ -52,7 +52,7 @@ class Command(lux.Command):
 
     def get_lux_template_directory(self):
         return os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                            '../template/')
+                            'template')
 
     def get_config(self):
         '''
