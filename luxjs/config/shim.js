@@ -23,6 +23,9 @@
             restangular: {
                 deps: ["angular"]
             },
+            'ng-file-upload': {
+                deps: ["angular"]
+            },
             crossfilter: {
                 exports: "crossfilter"
             },
